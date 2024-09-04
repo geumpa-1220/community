@@ -6,7 +6,6 @@
 <meta charset="UTF-8">
 <title>Sign Up - 오피스텔 주민 커뮤니티</title>
 <style>
-    /* 메인 컨테이너 스타일 */
     .container {
         display: flex;
         justify-content: center;
@@ -31,8 +30,7 @@
     }
 
     .signup-form input[type="text"],
-    .signup-form input[type="password"],
-    .signup-form input[type="email"] {
+    .signup-form input[type="password"] {
         width: 100%;
         padding: 10px;
         margin-bottom: 15px;
@@ -55,7 +53,25 @@
     .signup-form input[type="submit"]:hover {
         background-color: #444;
     }
+    #error{
+        color:red;
+    }
 </style>
+<script type="text/javascript">
+    function validateForm()
+    {
+    	var password = document.forms["signupForm"]["pwd"].value;
+    	var confirmPassword = document.forms["signupForm"]["confirm_password"].value;
+    	
+    	if(password !== confirmPassword)
+    		{
+    		   document.getElementById("error").innerText="Passwords do not match.";
+    		   return false;
+    		}
+    	
+    	return true;
+    }
+</script>
 </head>
 <body>
 
@@ -63,14 +79,16 @@
 <div class="container">
     <div class="signup-form">
         <h2>Sign Up</h2>
-        <form action="../user/signUpProcess" method="post">
-            <input type="text" name="userid" placeholder="User ID" required>
+        <form  name="signupForm" action="../user/signUp" method="post" onsubmit="return validateForm()">
             <input type="text" name="username" placeholder="Username" required>
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required>
+            <input type="text" name="userid" placeholder="User ID" required>
+            <input type="password" name="pwd" placeholder="Password" required>
             <input type="password" name="confirm_password" placeholder="Confirm Password" required>
             <input type="submit" value="Sign Up">
         </form>
+        
+        <div id="error"></div>
+        
     </div>
 </div>
 

@@ -54,7 +54,11 @@
     .login-form input[type="submit"]:hover {
         background-color: #444;
     }
+     #error{
+        color:red;
+    }
 </style>
+
 </head>
 <body>
 
@@ -62,12 +66,16 @@
 <div class="container">
     <div class="login-form">
         <h2>Login</h2>
-        <form action="../user/loginProcess" method="post">
+        <form action="../user/login" method="post" >
             <input type="text" name="userid" placeholder="UserId" required>
-            <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="pwd" placeholder="Password" required>
             <input type="submit" value="Login">
         </form>
+        
+        <c:if test="${ not empty error }">
+             <div id="error">${ error }</div>
+        </c:if>
+        
     </div>
 </div>
 
