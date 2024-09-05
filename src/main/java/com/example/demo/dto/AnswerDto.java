@@ -8,7 +8,7 @@ import lombok.Data;
 public class AnswerDto {
 	
 	private int id,qid;
-	private String username,answer;
+	private String username,content;
 	private Timestamp answertime;
 
 }

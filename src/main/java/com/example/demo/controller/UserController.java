@@ -59,4 +59,20 @@ public class UserController {
 	}
 	
 
+	@GetMapping("/user/profile")
+	public String profile()
+	{
+		return userService.profile();
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+

@@ -66,14 +66,13 @@
 
     /* 푸터 스타일 */
     footer {
-        background-color: #333;
-        color: white;
-        text-align: center;
-        padding: 10px;
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-    }
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    width: 100%;
+  }
+
 </style>
 
 <sitemesh:write property="head"/>
@@ -87,27 +86,27 @@
             <c:when test="${ not empty sessionScope.username }">
                 <div>
                     <a href="#">COMMUNITY</a>
-                    <a href="#">Q&A</a>
+                    <a href="/qna/questionList">Q&A</a>
                 </div>
                 <div>
                     <h1><a href="/">  우리 오피스텔 주민 커뮤니티  </a></h1>
                 </div>
                 <div>
-                    <a href="#">${ sessionScope.username}님</a> |
+                    <a href="/user/profile">${ sessionScope.username}님</a> |
                     <a href="/logout">LOG OUT</a>
                 </div>
             </c:when>
             <c:otherwise>
                 <div>
-                    <a href="../user/login">COMMUNITY</a>
-                    <a href="../user/login">Q&A</a>
+                    <a href="/user/login">COMMUNITY</a>
+                    <a href="/user/login">Q&A</a>
                 </div>
                 <div>
                     <h1><a href="/">오피스텔 주민 커뮤니티</a></h1>
                 </div>
                 <div>
-                    <a href="../user/login">Login</a> |
-                    <a href="../user/signUp">Sign Up</a>
+                    <a href="/user/login">Login</a> |
+                    <a href="/user/signUp">Sign Up</a>
                 </div>
             </c:otherwise>
         </c:choose>

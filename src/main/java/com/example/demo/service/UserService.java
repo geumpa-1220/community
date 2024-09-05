@@ -17,4 +17,8 @@ public interface UserService {
 	public String login(UserDto userDto , Model model , HttpSession session);
 	
 	public String logout(HttpSession session);
+	
+	public String profile();
+	
+	
 }

@@ -76,6 +76,11 @@ public class UserServiceImpl implements UserService {
 		return "redirect:/";
 	}
 
+	
+	public String profile()
+	{
+		return "user/profile";
+	}
 }
 
 

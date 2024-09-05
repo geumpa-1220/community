@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.QnaMapper">
+
+<select id="getList" resultType="com.example.demo.dto.QuestionDto">
+     select * from question
+     order by questiontime desc
+</select>
+
+
+<insert id="writeQuestion"  parameterType="com.example.demo.dto.QuestionDto">
+      insert into question ( username , title , content )
+      values ( #{username} , #{title} , #{content} )
+</insert>
+    
+ 
+ <delete id="deleteQuestion"  parameterType="int">
+      delete from question
+      where id = #{ id }
+ </delete>  
+ 
+<select id="getQuestionContent"  resultType="com.example.demo.dto.QuestionDto">
+       select * from question
+       where id = #{id}
+</select>
+<select id="getAnswerContent"  resultType="com.example.demo.dto.AnswerDto">
+       select * from answer
+       where qid = #{id}
+</select>
+    
+
+<insert id="addAnswer"  parameterType="com.example.demo.dto.QuestionDto">
+       insert into answer ( qid , username , content )
+       values ( #{ qid} , #{ username } , #{ content } )
+</insert>
+    
+<delete id="deleteAnswer"  parameterType="int">
+       delete from answer
+       where id = #{ id }
+</delete>
+    
+</mapper>
+
+
+
+
+
+
