@@ -107,7 +107,7 @@
     <div class="profile-info">
         <p><strong>이메일:</strong> ${user.email}</p>
         <p><strong>거주 층:</strong> ${user.floor}층</p>
-        <p><strong>가입일자:</strong> ${user.joinedDate}</p>
+        <p><strong>가입일자:</strong> ${user.usertime}</p>
     </div>
 
     <!-- 정보 수정 및 비밀번호 변경 버튼 -->
