@@ -22,7 +22,7 @@ public class QnaServiceImpl implements QnaService{
 	@Override
 	public ArrayList<QuestionDto> getList(Model model)
 	{
-		ArrayList<QuestionDto> list = qnaMapper.getList();
+		ArrayList<QuestionDto> list = qnaMapper.getAllList();
 		model.addAttribute("qdto", list);
 		
 		return list;
@@ -58,7 +58,7 @@ public class QnaServiceImpl implements QnaService{
 	@Override
 	public ArrayList<AnswerDto> getAnswerContent(int id , Model model)
 	{
-		ArrayList<AnswerDto> answerList = qnaMapper.getAnswerContent(id);
+		ArrayList<AnswerDto> answerList = qnaMapper.getAnswer(id);
 		model.addAttribute("answer", answerList);
 		
 		return answerList;

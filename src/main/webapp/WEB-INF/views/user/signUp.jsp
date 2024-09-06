@@ -30,7 +30,8 @@
     }
 
     .signup-form input[type="text"],
-    .signup-form input[type="password"] {
+    .signup-form input[type="password"],
+    .signup-form input[type="email"] {
         width: 100%;
         padding: 10px;
         margin-bottom: 15px;
@@ -82,6 +83,8 @@
         <form  name="signupForm" action="../user/signUp" method="post" onsubmit="return validateForm()">
             <input type="text" name="username" placeholder="Username" required>
             <input type="text" name="userid" placeholder="User ID" required>
+            <input type="email"  name="email" placeholder="Email">
+            <input type="text"  name="floor" placeholder="Floor">
             <input type="password" name="pwd" placeholder="Password" required>
             <input type="password" name="confirm_password" placeholder="Confirm Password" required>
             <input type="submit" value="Sign Up">

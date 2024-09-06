@@ -4,13 +4,37 @@
 
 <insert id="signUp"  parameterType="com.example.demo.dto.UserDto">
     insert into user
-    (userid , username , pwd)
-    values (#{userid} , #{username} , #{pwd})
+    (userid , username , pwd , email , floor)
+    values (#{userid} , #{username} , #{pwd} , #{email} , #{floor})
 </insert>
 
 <select id="login" resultType="com.example.demo.dto.UserDto">
      select * from user
-     where userid=#{userid}
+     where userid =#{ userid }
 </select>
 
+<select id="userDate" resultType="com.example.demo.dto.UserDto">
+     select * from user
+     where id =#{ id}
+</select>
+
+<select id="getQuestionList"  resultType="com.example.demo.dto.QuestionDto" > 
+     select * from question
+     where username = #{ username }
+</select>
+
+<select id="getAnswerList" resultType="com.example.demo.dto.AnswerDto">
+      select * from answer
+      where username = #{ username }
+</select>
+
+<update id="updateUser" parameterType="com.example.demo.dto.UserDto" >
+      update user set 
+      username = #{ username } , email = #{ email } , floor = #{ floor } , bio = #{ bio } , pwd = #{ pwd }
+      where id = #{ id }
+</update>
+
 </mapper>
+
+
+

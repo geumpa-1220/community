@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.demo.mapper.QnaMapper">
 
-<select id="getList" resultType="com.example.demo.dto.QuestionDto">
+<select id="getAllList" resultType="com.example.demo.dto.QuestionDto">
      select * from question
      order by questiontime desc
 </select>
@@ -23,7 +23,7 @@
        select * from question
        where id = #{id}
 </select>
-<select id="getAnswerContent"  resultType="com.example.demo.dto.AnswerDto">
+<select id="getAnswer"  resultType="com.example.demo.dto.AnswerDto">
        select * from answer
        where qid = #{id}
 </select>

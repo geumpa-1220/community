@@ -60,10 +60,24 @@ public class UserController {
 	
 
 	@GetMapping("/user/profile")
-	public String profile()
+	public String profile(HttpSession session , Model model)
 	{
-		return userService.profile();
+		return userService.profile(session,model);
 	}
+	
+	
+	@GetMapping("/user/editProfile")
+	public String editProfileForm(Model model, HttpSession session)
+	{
+		return userService.editProfileForm(model,session);
+	}
+	@PostMapping("/user/editProfile")
+	public String editProfile(UserDto userDto , HttpSession session)
+	{
+		return userService.editProfile(userDto, session);
+	}
+	
+	
 	
 }
 

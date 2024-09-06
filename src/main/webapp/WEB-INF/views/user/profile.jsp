@@ -17,17 +17,76 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 1);
         }
 
-        /* 사용자 정보 스타일 */
+        /* 프로필 헤더 스타일 */
         .profile-header {
             text-align: center;
             margin-bottom: 20px;
         }
 
         .profile-header h1 {
-            font-size: 2em;
-            margin: 10px 0;
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 20px;
         }
 
+        /* 자기소개 섹션 스타일 */
+        .bio-container {
+            padding: 20px;
+            background-color: #f1f1f1;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 1);
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .bio-title {
+            font-size: 1.5em;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .bio-text {
+            font-size: 1.2em;
+            color: #555;
+            line-height: 1.6;
+            padding: 10px;
+            border-left: 4px solid #007bff;
+            background-color: #fff;
+            border-radius: 5px;
+        }
+
+        .bio-form {
+            display: flex;
+            justify-content: center;
+            gap: 10px; /* 입력 필드와 버튼 사이 간격 */
+        }
+
+        .bio-input {
+            padding: 10px;
+            font-size: 1.1em;
+            width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .btn-save {
+            background-color: #444;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-save:hover {
+            background-color: #333;
+        }
+
+        /* 사용자 정보 스타일 */
         .profile-info {
             font-size: 1.1em;
             color: #555;
@@ -45,6 +104,8 @@
             cursor: pointer;
             text-decoration: none;
             display: inline-block;
+            width: 100%;  /* 버튼을 길쭉하게 */
+            max-width: 400px;  /* 최대 너비를 지정 */
         }
 
         .btn:hover {
@@ -54,6 +115,7 @@
         .btn-container {
             text-align: center;
             margin-bottom: 20px;
+            
         }
 
         /* 질문 및 답글 목록 스타일 */
@@ -100,7 +162,24 @@
     <!-- 사용자 정보 -->
     <div class="profile-header">
         <h1>${user.username}님</h1>
-        <p>${user.bio}</p> <!-- 간단한 자기소개 -->
+
+        <div class="bio-section">
+            <!-- 사용자가 자기소개를 입력하지 않았을 때 -->
+            <c:if test="${empty user.bio}">
+                <div class="bio-container">
+                    <p class="bio-title">자기소개</p>
+                    <p class="bio-text">아직 자기소개를 안했어요.......</p>
+                </div>
+            </c:if>
+
+            <!-- 사용자의 자기소개가 있을 때 -->
+            <c:if test="${!empty user.bio}">
+                <div class="bio-container">
+                    <p class="bio-title">자기소개</p>
+                    <p class="bio-text">${user.bio}</p>
+                </div>
+            </c:if>
+        </div>
     </div>
 
     <!-- 기본 정보 -->
@@ -113,18 +192,24 @@
     <!-- 정보 수정 및 비밀번호 변경 버튼 -->
     <div class="btn-container">
         <a href="/user/editProfile" class="btn">정보 수정</a>
-        <a href="/user/changePassword" class="btn">비밀번호 변경</a>
     </div>
 
     <!-- 내가 작성한 질문 목록 -->
     <div class="section">
         <h2>내가 작성한 질문 목록</h2>
         <ul class="question-list">
-            <c:forEach var="question" items="${user.questions}">
-                <li>
-                    <a href="/qna/qnaContent/${question.id}">${question.title}</a>
-                </li>
-            </c:forEach>
+            <c:choose>
+                <c:when test="${empty question}">
+                    <li>작성한 질문이 없습니다.</li>
+                </c:when>
+                <c:otherwise>
+                    <c:forEach var="qList" items="${question}">
+                        <li>
+                            <a href="/qna/qnaContent/${qList.id}">${qList.title}</a>
+                        </li>
+                    </c:forEach>
+                </c:otherwise>
+            </c:choose>
         </ul>
     </div>
 
@@ -132,12 +217,18 @@
     <div class="section">
         <h2>내가 답변한 질문 목록</h2>
         <ul class="answer-list">
-            <c:forEach var="answer" items="${user.answers}">
-                <li>
-                    <a href="/qna/qnaContent/${answer.questionId}">질문: ${answer.questionTitle}</a> <br>
-                    답변: ${answer.content}
-                </li>
-            </c:forEach>
+            <c:choose>
+                <c:when test="${empty answer}">
+                    <li>답변한 질문이 없습니다.</li>
+                </c:when>
+                <c:otherwise>
+                    <c:forEach var="answer" items="${answer}">
+                        <li>
+                            <a href="/qna/qnaContent/${answer.qid}"> 답변: ${answer.content}</a> <br> 
+                        </li>
+                    </c:forEach>
+                </c:otherwise>
+            </c:choose>
         </ul>
     </div>
 </div>

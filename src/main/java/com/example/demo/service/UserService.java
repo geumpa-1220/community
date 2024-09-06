@@ -14,11 +14,11 @@ public interface UserService {
 	public String signUp(UserDto userDto , HttpSession session);
 	
 	public String loginForm();
-	public String login(UserDto userDto , Model model , HttpSession session);
-	
+	public String login(UserDto userDto,Model model,HttpSession session);
 	public String logout(HttpSession session);
 	
-	public String profile();
-	
+	public String profile(HttpSession session , Model model);
+	public String editProfileForm(Model model, HttpSession session);
+	public String editProfile(UserDto userDto , HttpSession session);
 	
 }

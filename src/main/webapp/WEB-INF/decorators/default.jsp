@@ -5,6 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+
 <title>오피스텔 주민 커뮤니티</title>
 <style>
     body {
@@ -85,7 +86,7 @@
         <c:choose>
             <c:when test="${ not empty sessionScope.username }">
                 <div>
-                    <a href="#">COMMUNITY</a>
+                    <a href="/community/chat">COMMUNITY</a>
                     <a href="/qna/questionList">Q&A</a>
                 </div>
                 <div>
