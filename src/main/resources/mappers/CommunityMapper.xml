@@ -2,8 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.demo.mapper.CommunityMapper">
 
-<select id="getResidentList"  resultType="String">
-     select username from user
+<select id="getUserList"  resultType="com.example.demo.dto.UserDto">
+     select id,username from user
+</select>
+
+<select id="getAllMessages" resultType="com.example.demo.dto.MessageDto">
+     select * from message
 </select>
 
 </mapper>

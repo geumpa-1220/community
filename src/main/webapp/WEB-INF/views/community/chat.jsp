@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -240,10 +241,10 @@
 
         data.forEach(function(item) {
             var li = document.createElement("li");
-            li.textContent = type === "resident" ? item.name : item.content;
+            li.textContent = type === "resident" ? item.username : item.content;
             li.addEventListener("click", function() {
                 if (type === "resident") {
-                    appendMessage(`${item.name}님과의 대화를 시작합니다.`, "system"); // 시스템 메시지
+                    appendMessage(`${item.username}님과의 대화를 시작합니다.`, "system"); // 시스템 메시지
                 } else if (type === "message") {
                     appendMessage(item.content, "user"); // 사용자가 클릭한 메시지 추가
                 }

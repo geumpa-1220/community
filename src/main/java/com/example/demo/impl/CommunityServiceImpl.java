@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dto.MessageDto;
 import com.example.demo.dto.UserDto;
 import com.example.demo.mapper.CommunityMapper;
 import com.example.demo.service.CommunityService;
@@ -17,8 +18,14 @@ public class CommunityServiceImpl  implements CommunityService{
 
 	
 	@Override
-	public List<String> getResidentList()
+	public List<UserDto> getUserList()
 	{
-		return communityMapper.getResidentList();
+		return communityMapper.getUserList();
+	}
+	
+	@Override
+	public List<MessageDto> getAllMessages()
+	{
+		return communityMapper.getAllMessages();
 	}
 }
