@@ -9,5 +9,8 @@ public interface CommunityService {
 	
 	List<UserDto> getUserList();
 	List<MessageDto> getAllMessages();
+	void saveMessage(MessageDto messageDto);
+	List<MessageDto> getMessagesByUser(String username);
+
 
 }

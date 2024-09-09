@@ -1,27 +1,22 @@
 package com.example.demo.dto;
 
-import java.time.LocalDateTime;
 
-import lombok.Data;
 
-@Data
+
+
+
 public class MessageDto {
-	private int id;	
-	private String username,content;
-	private LocalDateTime messageTime;
-	
-	
-	public int getId() {
-		return id;
+    public String getSender() {
+		return sender;
 	}
-	public void setId(int id) {
-		this.id = id;
+	public void setSender(String sender) {
+		this.sender = sender;
 	}
-	public String getUsername() {
-		return username;
+	public String getReceiver() {
+		return receiver;
 	}
-	public void setUsername(String username) {
-		this.username = username;
+	public void setReceiver(String receiver) {
+		this.receiver = receiver;
 	}
 	public String getContent() {
 		return content;
@@ -29,12 +24,17 @@ public class MessageDto {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public LocalDateTime getMessageTime() {
-		return messageTime;
+	public String getMessagetime() {
+		return messagetime;
 	}
-	public void setMessageTime(LocalDateTime messageTime) {
-		this.messageTime = messageTime;
+	public void setMessagetime(String messagetime) {
+		this.messagetime = messagetime;
 	}
+	private String sender;
+    private String receiver;
+    private String content;
+    private String messagetime;
 
-
+  
+    
 }

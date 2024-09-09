@@ -9,7 +9,6 @@ import com.example.demo.dto.MessageDto;
 import com.example.demo.dto.UserDto;
 import com.example.demo.mapper.CommunityMapper;
 import com.example.demo.service.CommunityService;
-
 @Service
 public class CommunityServiceImpl  implements CommunityService{
 	
@@ -28,4 +27,19 @@ public class CommunityServiceImpl  implements CommunityService{
 	{
 		return communityMapper.getAllMessages();
 	}
+	
+	
+	 @Override
+     public void saveMessage(MessageDto messageDto) {
+	        communityMapper.saveMessage(messageDto);
+	    }
+	 
+	 
+	 @Override
+	 public List<MessageDto> getMessagesByUser(String username) {
+	     return communityMapper.getMessagesByUser(username);
+	 }
+
+	 
+	 
 }

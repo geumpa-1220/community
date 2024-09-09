@@ -14,24 +14,20 @@
             box-sizing: border-box;
         }
 
-        /* 전체 레이아웃 */
         .chat-container {
             display: flex;
             height: 70vh;
             background-color: #f9f9f9;
         }
 
-        /* 사이드바 */
         .sidebar {
             width: 250px;
             background-color: #333;
             color: white;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
         }
 
-        /* 메뉴 스타일 */
         .menu-item {
             padding: 15px;
             text-align: center;
@@ -45,7 +41,6 @@
             background-color: #444;
         }
 
-        /* 스크롤 가능한 리스트 */
         .scrollable-list {
             flex: 1;
             overflow-y: auto;
@@ -68,7 +63,6 @@
             background-color: #444;
         }
 
-        /* 메인 채팅 영역 */
         .chat-main {
             flex: 1;
             display: flex;
@@ -103,7 +97,6 @@
             color: #888;
         }
 
-        /* 채팅 입력 영역 */
         .chat-input {
             display: flex;
             padding: 10px;
@@ -138,20 +131,17 @@
 <body>
 
 <div class="chat-container">
-    <!-- 왼쪽 사이드바 -->
     <div class="sidebar">
         <div class="menu-item" id="residents-btn">주민 리스트</div>
-        <div class="menu-item" id="messages-btn">메시지 목록</div>
+        <div class="menu-item" id="messages-btn">채팅방 목록</div>
 
-        <!-- 스크롤 가능한 주민 목록 또는 메시지 목록 -->
         <div class="scrollable-list" id="list-container">
             <ul id="dynamic-list"></ul>
         </div>
     </div>
 
-    <!-- 중앙 채팅 영역 -->
     <div class="chat-main">
-        <div class="chat-header">채팅방</div>
+        <div class="chat-header" id="chat-header">채팅방</div>
         <div class="chat-messages" id="chat-box"></div>
         <div class="chat-input">
             <input type="text" placeholder="메시지를 입력하세요" id="message-input">
@@ -160,99 +150,52 @@
     </div>
 </div>
 
-<!-- WebSocket 및 AJAX 스크립트 -->
 <script>
-    // WebSocket 연결
-    var socket = new WebSocket("ws://localhost:8080/ws/chat");
+    // WebSocket 객체를 선언합니다.
+    let socket;
 
-    // WebSocket이 성공적으로 열렸을 때
-    socket.onopen = function() {
-        console.log("WebSocket 연결 성공");
+    // 페이지가 로드되면 WebSocket 연결을 설정합니다.
+    window.onload = function () {
+        // WebSocket 서버와 연결을 설정합니다.
+        socket = new WebSocket("ws://localhost:8080/chat");
+
+        // 연결이 열렸을 때 호출되는 이벤트 핸들러
+        socket.onopen = function (event) {
+            console.log("WebSocket 연결이 열렸습니다.");
+        };
+
+        // 서버로부터 메시지를 받았을 때 호출되는 이벤트 핸들러
+        socket.onmessage = function (event) {
+            const chatBox = document.getElementById("chat-box");
+            const message = document.createElement("div");
+            message.className = "message user";
+            message.innerText = event.data;
+            chatBox.appendChild(message);
+            chatBox.scrollTop = chatBox.scrollHeight;  // 스크롤을 최신 메시지로 이동
+        };
+
+        // WebSocket 연결이 닫혔을 때 호출되는 이벤트 핸들러
+        socket.onclose = function (event) {
+            console.log("WebSocket 연결이 닫혔습니다.");
+        };
+
+        // 오류가 발생했을 때 호출되는 이벤트 핸들러
+        socket.onerror = function (event) {
+            console.error("WebSocket 오류가 발생했습니다:", event);
+        };
     };
 
-    // 서버에서 메시지를 받을 때
-    socket.onmessage = function(event) {
-        var message = event.data;
-        appendMessage(message, "user"); // 사용자 메시지 추가
-    };
-
-    // 오류 처리
-    socket.onerror = function(error) {
-        console.error("WebSocket 오류:", error);
-    };
-
-    // 연결이 닫혔을 때
-    socket.onclose = function() {
-        console.log("WebSocket 연결 종료");
-    };
-
-    // 메시지 추가 처리 함수
-    function appendMessage(message, type) {
-        var chatBox = document.getElementById("chat-box");
-        var messageElement = document.createElement("div");
-        messageElement.classList.add("message", type);
-        messageElement.innerHTML = `<p>${message}</p>`;
-        chatBox.appendChild(messageElement);
-
-        // 스크롤을 최신 메시지로 이동
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    // 메시지 전송 처리
-    document.getElementById("send-btn").addEventListener("click", function() {
-        var message = document.getElementById("message-input").value.trim();
+    // 전송 버튼을 클릭하면 메시지를 서버로 전송합니다.
+    document.getElementById("send-btn").addEventListener("click", function () {
+        const messageInput = document.getElementById("message-input");
+        const message = messageInput.value;
         if (message) {
-            socket.send(message);
-            appendMessage(message, "user"); // 사용자 메시지 추가
-            document.getElementById("message-input").value = "";
+            socket.send(message);  // WebSocket을 통해 서버로 메시지 전송
+            messageInput.value = "";  // 입력 필드 초기화
         }
     });
-
-    // 주민 리스트 요청 (AJAX)
-    document.getElementById("residents-btn").addEventListener("click", function() {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", "/residents/list", true); // 서버에서 주민 리스트 가져옴
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                var residents = JSON.parse(xhr.responseText);
-                updateList(residents, "resident"); // 리스트 업데이트
-            }
-        };
-        xhr.send();
-    });
-
-    // 메시지 목록 요청 (AJAX)
-    document.getElementById("messages-btn").addEventListener("click", function() {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", "/api/messages", true); // 서버에서 메시지 목록 가져옴
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                var messages = JSON.parse(xhr.responseText);
-                updateList(messages, "message"); // 리스트 업데이트
-            }
-        };
-        xhr.send();
-    });
-
-    // 리스트 업데이트 함수
-    function updateList(data, type) {
-        var listContainer = document.getElementById("dynamic-list");
-        listContainer.innerHTML = ""; // 기존 리스트 초기화
-
-        data.forEach(function(item) {
-            var li = document.createElement("li");
-            li.textContent = type === "resident" ? item.username : item.content;
-            li.addEventListener("click", function() {
-                if (type === "resident") {
-                    appendMessage(`${item.username}님과의 대화를 시작합니다.`, "system"); // 시스템 메시지
-                } else if (type === "message") {
-                    appendMessage(item.content, "user"); // 사용자가 클릭한 메시지 추가
-                }
-            });
-            listContainer.appendChild(li);
-        });
-    }
 </script>
+
 
 </body>
 </html>
