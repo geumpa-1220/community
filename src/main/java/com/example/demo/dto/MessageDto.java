@@ -6,6 +6,12 @@ package com.example.demo.dto;
 
 
 public class MessageDto {
+	
+	private String sender;
+    private String receiver;
+    private String content;
+    private String messagetime;
+	
     public String getSender() {
 		return sender;
 	}
@@ -30,10 +36,7 @@ public class MessageDto {
 	public void setMessagetime(String messagetime) {
 		this.messagetime = messagetime;
 	}
-	private String sender;
-    private String receiver;
-    private String content;
-    private String messagetime;
+
 
   
     

@@ -27,14 +27,14 @@ public class CommunityController {
 		return "/community/chat";
 	}
 	
-	@GetMapping("/residents/list")
+	@GetMapping("/userlist")
 	public @ResponseBody  List<UserDto> getUserList()
 	{
 		return communityService.getUserList();
 	}
 	
-	@GetMapping("/api/messages")
-	public @ResponseBody List<MessageDto> getAllMessage()
+	@GetMapping("/chat/messages")
+	public @ResponseBody List<MessageDto> getMessage()
 	{
 		return communityService.getAllMessages();
 	}
