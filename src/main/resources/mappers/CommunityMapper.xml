@@ -14,7 +14,7 @@
 </select>
 
  <insert id="saveMessage">
-        INSERT INTO message (mtype,sender, receiver, content)
+        INSERT INTO message (mtype , sender, receiver, content)
         VALUES (#{mtype} , #{sender}, #{receiver}, #{content})
  </insert>
 

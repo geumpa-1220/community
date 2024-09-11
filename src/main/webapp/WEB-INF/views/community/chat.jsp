@@ -149,11 +149,11 @@
 <div class="chat-container">
     <div class="sidebar">
         <div class="menu-item" id="residents-btn">주민 리스트</div>
-        <div class="menu-item" id="messages-btn">채팅방 목록</div>
 
         <div class="scrollable-list" id="list-container">
             <ul id="dynamic-list"></ul>
         </div>
+		
     </div>
 
     <div class="chat-main">
@@ -165,7 +165,6 @@
         </div>
     </div>
 </div>
-
 <script>
     // WebSocket 객체를 선언합니다.
     let socket;
@@ -173,20 +172,27 @@
 
     // 페이지가 로드되면 WebSocket 연결을 설정합니다.
     window.onload = function () {
-        // WebSocket 서버와 연결을 설정합니다.
-        socket = new WebSocket("ws://localhost:8080/chat");
+        // WebSocket이 이미 열려 있는지 확인 후 연결을 설정합니다.
+        if (!socket || socket.readyState === WebSocket.CLOSED) {
+            socket = new WebSocket("ws://localhost:8080/chat");
+        }
 
         // 연결이 열렸을 때 호출되는 이벤트 핸들러
         socket.onopen = function (event) {
             console.log("WebSocket 연결이 열렸습니다.");
-   
-            const userId = "${sessionScope.userId}";
-            socket.send(JSON.stringify({ mtype: "register", userId: userId }));
+            
+            // 세션에서 사용자 ID를 서버로 전송
+            const userId = "${sessionScope.id}";
+            if (userId) {
+                socket.send(JSON.stringify({ mtype: "register", userId: userId }));
+            } else {
+                console.error("userId is not available.");
+            }
         };
 
         // WebSocket 연결이 닫혔을 때 호출되는 이벤트 핸들러
         socket.onclose = function (event) {
-            console.log("WebSocket 연결이 닫혔습니다.");
+            console.log("WebSocket 연결이 닫혔습니다!!!");
         };
 
         // 오류가 발생했을 때 호출되는 이벤트 핸들러
@@ -200,13 +206,19 @@
             const message = messageInput.value;
             if (message && chatUser) {
                 const messageData = JSON.stringify({
-                	mtype:"message",
-                    sender: "${sessionScope.userId}",  // 현재 사용자의 ID (예: 세션에서 가져옴)
+                    mtype: "message",
+                    sender: "${sessionScope.id}",  // 현재 사용자의 ID
                     receiver: chatUser.id,  // 대화 상대방 ID
                     content: message
                 });
-                socket.send(messageData);  // WebSocket을 통해 서버로 메시지 전송
-                messageInput.value = "";  // 입력 필드 초기화
+
+                // WebSocket이 열린 상태일 때만 메시지 전송
+                if (socket.readyState === WebSocket.OPEN) {
+                    socket.send(messageData);
+                    messageInput.value = "";  // 입력 필드 초기화
+                } else {
+                    console.error("WebSocket is not open. Current state:", socket.readyState);
+                }
             }
         });
 
@@ -219,7 +231,7 @@
             const messageDiv = document.createElement("div");
 
             // 메시지의 발신자가 현재 사용자인지 상대방인지에 따라 스타일 적용
-            if (message.sender === "${sessionScope.userId}") {
+            if (message.sender === "${sessionScope.id}") {
                 messageDiv.className = "message user";  // 본인이 보낸 메시지
             } else {
                 messageDiv.className = "message other";  // 상대방이 보낸 메시지
@@ -247,25 +259,24 @@
                         // 사용자 클릭 시 채팅방으로 연결하는 로직 추가
                         listItem.addEventListener("click", function () {
                             chatUser = user;
-                            document.getElementById("chat-header").innerText = chatUser.username
+                            document.getElementById("chat-header").innerText = chatUser.username;
 
                             // 이전 채팅 기록 불러오기
-                            const userId = "${sessionScope.id}";
-                            
-                            fetch("messages/"+chatUser.id+"/"+userId)   //  messages/honggildong/33
+                            const userId = "${sessionScope.id}";  // 현재 사용자 ID
+                            console.log("chatUser.id:", chatUser.id);
+                            console.log("userId:", userId);  // userId가 제대로 있는지 확인
+
+                            fetch('messages/'+chatUser.id+'/'+userId)
                                 .then(response => response.json())
                                 .then(messages => {
-                                	 if (!Array.isArray(messages)) {
-                                         console.error("Received data is not an array", messages);
-                                         return;
-                                         }
+                                    // 서버에서 받아온 데이터가 배열인지 확인
+                                    if (!Array.isArray(messages)) {
+                                        console.error("Received data is not an array", messages);
+                                        return;
+                                    }
+
                                     const chatBox = document.getElementById("chat-box");
                                     chatBox.innerHTML = "";  // 기존 메시지 초기화
-                                    
-                                    
-                                    console.log("chatUser.id:", chatUser.id);
-                                    console.log("userId:", userId);  // 이 부분을 통해 userId가 제대로 있는지 확인
-
 
                                     messages.forEach(message => {
                                         const messageDiv = document.createElement("div");
@@ -284,7 +295,7 @@
                 })
                 .catch(error => console.error("Error fetching users:", error));
         });
-    }
+    };
 </script>
 
 
