@@ -8,11 +8,14 @@
 
 <select id="getAllMessages" resultType="com.example.demo.dto.MessageDto">
      select * from message
+     where ( sender = #{userId} and receiver = #{chatUserId} )
+     or ( sender = #{chatUserId}  and receiver = #{userId} )
+      ORDER BY messagetime ASC
 </select>
 
  <insert id="saveMessage">
-        INSERT INTO message (sender, receiver, content, messagetime)
-        VALUES (#{sender}, #{receiver}, #{content}, #{messagetime})
+        INSERT INTO message (mtype,sender, receiver, content)
+        VALUES (#{mtype} , #{sender}, #{receiver}, #{content})
  </insert>
 
 <select id="getMessagesByUser" resultType="com.example.demo.dto.MessageDto">

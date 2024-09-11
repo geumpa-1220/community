@@ -1,18 +1,30 @@
 package com.example.demo.dto;
 
-
-
-
-
+import java.sql.Timestamp;
 
 public class MessageDto {
 	
+	private String mtype;
 	private String sender;
     private String receiver;
     private String content;
-    private String messagetime;
+    private Timestamp messagetime;
 	
-    public String getSender() {
+    
+
+    public String getMtype() {
+		return mtype;
+	}
+	public void setMtype(String mtype) {
+		this.mtype = mtype;
+	}
+    public Timestamp getMessagetime() {
+		return messagetime;
+	}
+	public void setMessagetime(Timestamp messagetime) {
+		this.messagetime = messagetime;
+	}
+	public String getSender() {
 		return sender;
 	}
 	public void setSender(String sender) {
@@ -30,12 +42,7 @@ public class MessageDto {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public String getMessagetime() {
-		return messagetime;
-	}
-	public void setMessagetime(String messagetime) {
-		this.messagetime = messagetime;
-	}
+	
 
 
   

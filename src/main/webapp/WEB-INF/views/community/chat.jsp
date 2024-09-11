@@ -179,6 +179,9 @@
         // 연결이 열렸을 때 호출되는 이벤트 핸들러
         socket.onopen = function (event) {
             console.log("WebSocket 연결이 열렸습니다.");
+   
+            const userId = "${sessionScope.userId}";
+            socket.send(JSON.stringify({ mtype: "register", userId: userId }));
         };
 
         // WebSocket 연결이 닫혔을 때 호출되는 이벤트 핸들러
@@ -196,73 +199,94 @@
             const messageInput = document.getElementById("message-input");
             const message = messageInput.value;
             if (message && chatUser) {
-                const payload = JSON.stringify({
-                    to: chatUser.id, // 대화 상대방 ID
-                    message: message
+                const messageData = JSON.stringify({
+                	mtype:"message",
+                    sender: "${sessionScope.userId}",  // 현재 사용자의 ID (예: 세션에서 가져옴)
+                    receiver: chatUser.id,  // 대화 상대방 ID
+                    content: message
                 });
-                socket.send(payload);  // WebSocket을 통해 서버로 메시지 전송
+                socket.send(messageData);  // WebSocket을 통해 서버로 메시지 전송
                 messageInput.value = "";  // 입력 필드 초기화
             }
         });
 
-     // 서버로부터 메시지를 받았을 때 호출되는 이벤트 핸들러
+        // 서버로부터 메시지를 받았을 때 호출되는 이벤트 핸들러
         socket.onmessage = function (event) {
             const chatBox = document.getElementById("chat-box");
-            const receivedMessage = JSON.parse(event.data);
+            const message = JSON.parse(event.data);  // JSON 데이터를 파싱
 
-            // 서버에서 받은 메시지는 상대방이 보낸 것이므로 바로 출력
-            const message = document.createElement("div");
-            message.className = "message other";  // 상대방의 메시지
-            message.innerText = receivedMessage.message;
-            chatBox.appendChild(message);
+            // 서버에서 받은 메시지를 표시하기 위한 div 생성
+            const messageDiv = document.createElement("div");
 
-            chatBox.scrollTop = chatBox.scrollHeight;  // 스크롤을 최신 메시지로 이동
+            // 메시지의 발신자가 현재 사용자인지 상대방인지에 따라 스타일 적용
+            if (message.sender === "${sessionScope.userId}") {
+                messageDiv.className = "message user";  // 본인이 보낸 메시지
+            } else {
+                messageDiv.className = "message other";  // 상대방이 보낸 메시지
+            }
+
+            messageDiv.innerText = message.content;  // 메시지 내용 출력
+            chatBox.appendChild(messageDiv);
+
+            // 스크롤을 최신 메시지로 이동
+            chatBox.scrollTop = chatBox.scrollHeight;
         };
 
+        // 클라이언트에서 API 호출하여 주민 리스트 출력
+        document.getElementById("residents-btn").addEventListener("click", function () {
+            fetch("/userlist")
+                .then(response => response.json())
+                .then(users => {
+                    const listContainer = document.getElementById("dynamic-list");
+                    listContainer.innerHTML = "";  // 기존 리스트 초기화
 
-    // 클라이언트에서 API 호출하여 주민 리스트 출력
-    document.getElementById("residents-btn").addEventListener("click", function () {
-        fetch("/userlist")
-            .then(response => response.json())
-            .then(users => {
-                const listContainer = document.getElementById("dynamic-list");
-                listContainer.innerHTML = "";  // 기존 리스트 초기화
+                    users.forEach(user => {
+                        const listItem = document.createElement("li");
+                        listItem.innerText = user.username;  // 사용자 이름 출력
 
-                users.forEach(user => {
-                    const listItem = document.createElement("li");
-                    listItem.innerText = user.username;  // 사용자 이름 출력
+                        // 사용자 클릭 시 채팅방으로 연결하는 로직 추가
+                        listItem.addEventListener("click", function () {
+                            chatUser = user;
+                            document.getElementById("chat-header").innerText = chatUser.username
 
-                    // 사용자 클릭 시 채팅방으로 연결하는 로직 추가
-                    listItem.addEventListener("click", function () {
-                        chatUser = user;
-                        document.getElementById("chat-header").innerText = chatUser.username;
+                            // 이전 채팅 기록 불러오기
+                            const userId = "${sessionScope.id}";
+                            
+                            fetch("messages/"+chatUser.id+"/"+userId)   //  messages/honggildong/33
+                                .then(response => response.json())
+                                .then(messages => {
+                                	 if (!Array.isArray(messages)) {
+                                         console.error("Received data is not an array", messages);
+                                         return;
+                                         }
+                                    const chatBox = document.getElementById("chat-box");
+                                    chatBox.innerHTML = "";  // 기존 메시지 초기화
+                                    
+                                    
+                                    console.log("chatUser.id:", chatUser.id);
+                                    console.log("userId:", userId);  // 이 부분을 통해 userId가 제대로 있는지 확인
 
-                        // 이전 채팅 기록 불러오기
-                        const userId = "${sessionScope.id}";
-                        fetch(`/chat/messages/${chatUser.id}?userId=${userId}`)
-                            .then(response => response.json())
-                            .then(messages => {
-                                const chatBox = document.getElementById("chat-box");
-                                chatBox.innerHTML = "";  // 기존 메시지 초기화
 
-                                messages.forEach(message => {
-                                    const messageDiv = document.createElement("div");
-                                    // 발신자가 사용자인지 상대방인지에 따라 다른 스타일 적용
-                                    messageDiv.className = message.sender === userId ? "message user" : "message other";
-                                    messageDiv.innerText = message.text;  // 저장된 메시지 출력
-                                    chatBox.appendChild(messageDiv);
-                                });
+                                    messages.forEach(message => {
+                                        const messageDiv = document.createElement("div");
+                                        // 발신자가 사용자인지 상대방인지에 따라 다른 스타일 적용
+                                        messageDiv.className = message.sender === userId ? "message user" : "message other";
+                                        messageDiv.innerText = message.content;  // 저장된 메시지 출력
+                                        chatBox.appendChild(messageDiv);
+                                    });
 
-                                chatBox.scrollTop = chatBox.scrollHeight;  // 스크롤을 최신 메시지로 이동
-                            })
-                            .catch(error => console.error("Error fetching chat history:", error));
+                                    chatBox.scrollTop = chatBox.scrollHeight;  // 스크롤을 최신 메시지로 이동
+                                })
+                                .catch(error => console.error("Error fetching chat history:", error));
+                        });
+                        listContainer.appendChild(listItem);
                     });
-                    listContainer.appendChild(listItem);
-                });
-            })
-            .catch(error => console.error("Error fetching users:", error));
-    });
+                })
+                .catch(error => console.error("Error fetching users:", error));
+        });
+    }
 </script>
+
 
 
 </body>

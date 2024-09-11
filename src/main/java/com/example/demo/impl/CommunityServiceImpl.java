@@ -1,5 +1,6 @@
 package com.example.demo.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +24,9 @@ public class CommunityServiceImpl  implements CommunityService{
 	}
 	
 	@Override
-	public List<MessageDto> getAllMessages()
+	public ArrayList<MessageDto> getAllMessages(String chatUserId , String userId)
 	{
-		return communityMapper.getAllMessages();
+		return communityMapper.getAllMessages(chatUserId , userId);
 	}
 	
 	
